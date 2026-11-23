@@ -77,12 +77,12 @@
 
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
       margin-bottom: 16px;
     }
-    @media (max-width: 768px) {
-      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (max-width: 640px) {
+      .kpi-grid { grid-template-columns: minmax(0, 1fr); }
     }
     .kpi-card {
       background: var(--card);
@@ -93,37 +93,65 @@
     .kpi-label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
     .kpi-value { font-size: 26px; font-weight: 700; margin-top: 4px; color: var(--text); }
     .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .top-list {
-      list-style: none;
-      margin-top: 6px;
-      padding: 0;
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+
+    .top5-panel {
+      border-left: 5px solid var(--primary);
     }
-    .top-list li {
+    .top5-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
-      border-bottom: 1px dashed var(--border);
-      padding-bottom: 3px;
+      margin-bottom: 12px;
     }
-    .top-list li:last-child { border-bottom: none; padding-bottom: 0; }
-    .top-name {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .top5-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .top5-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .top5-table th {
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 700;
+      padding: 9px 12px;
+      border-bottom: 1px solid #fecaca;
+      text-align: left;
+      position: static;
+    }
+    .top5-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .top5-table tr:last-child td {
+      border-bottom: none;
+    }
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 12px;
+      background: #f1f5f9;
       color: var(--text);
     }
+    .rank-1 { background: #fee2e2; color: #991b1b; }
+    .rank-2 { background: #dbeafe; color: #1d4ed8; }
+    .rank-3 { background: #fef3c7; color: #b45309; }
     .top-score {
       background: var(--primary-soft);
       color: var(--primary);
       font-weight: 700;
-      padding: 1px 7px;
+      padding: 3px 10px;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 12px;
       white-space: nowrap;
     }
 
@@ -143,8 +171,8 @@
       padding: 18px 20px;
       margin-bottom: 16px;
     }
-    .panel-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
-    .chart-box { position: relative; height: 240px; width: 100%; }
+    .panel-title { font-size: 15px; font-weight: 700; }
+    .chart-box { position: relative; height: 240px; width: 100%; margin-top: 12px; }
 
     .toolbar {
       display: flex;
@@ -234,16 +262,30 @@
       <div class="kpi-value" id="kpiTotalSuara">-</div>
       <div class="kpi-sub">Akumulasi seluruh penilai</div>
     </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Inovasi Terpilih (&ge;1 Suara)</div>
-      <div class="kpi-value" id="kpiTerpilih">-</div>
-      <div class="kpi-sub">Sudah mendapatkan suara</div>
+  </div>
+
+  <div class="panel top5-panel">
+    <div class="top5-header">
+      <div class="panel-title" id="top5Title">5 Inovasi dengan Suara Tertinggi — IDE OPD</div>
+      <div class="top5-subtitle">Diurutkan berdasarkan perolehan suara terbanyak</div>
     </div>
-    <div class="kpi-card">
-      <div class="kpi-label">5 Suara Tertinggi</div>
-      <ul class="top-list" id="kpiTopList">
-        <li class="kpi-sub">Menunggu data...</li>
-      </ul>
+    <div class="table-wrap" style="max-height: none;">
+      <table class="top5-table">
+        <thead>
+          <tr>
+            <th class="center" style="width: 70px;">Peringkat</th>
+            <th>Nama Inovasi</th>
+            <th>OPD / Unit</th>
+            <th class="center">Kategori</th>
+            <th class="center" style="width: 110px;">Total Suara</th>
+          </tr>
+        </thead>
+        <tbody id="top5Body">
+          <tr>
+            <td colspan="5" class="center kpi-sub">Menunggu data...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -260,7 +302,7 @@
 
   <div class="panel">
     <div class="panel-title" id="tablePanelTitle">Tabel Rekapan — IDE OPD</div>
-    <div class="toolbar">
+    <div class="toolbar" style="margin-top: 12px;">
       <input type="text" id="searchInput" placeholder="Cari nama inovasi, OPD/unit, atau pemilih..." style="min-width: 260px; flex: 1;" />
       <select id="sortSelect">
         <option value="default">Urutan Sesuai Spreadsheet</option>
@@ -345,6 +387,7 @@
       }
 
       document.getElementById("kpiSheetLabel").textContent = `Sheet: ${activeSheet}`;
+      document.getElementById("top5Title").textContent = `5 Inovasi dengan Suara Tertinggi — ${activeSheet}`;
       document.getElementById("tablePanelTitle").textContent = `Tabel Rekapan — ${activeSheet}`;
       renderTable();
     }
@@ -359,28 +402,37 @@
 
     function updateKPIs() {
       const totalSuara = rows.reduce((sum, r) => sum + getTotalSuara(r), 0);
-      const terpilih = rows.filter(r => getTotalSuara(r) > 0).length;
 
       const top5 = [...rows]
-        .map(r => ({ nama: r.nama, suara: getTotalSuara(r) }))
+        .map(r => ({
+          nama: r.nama,
+          opd: r.opd || "-",
+          kat: r.kat || activeSheet,
+          suara: getTotalSuara(r)
+        }))
         .filter(item => item.suara > 0)
-        .sort((a, b) => b.suara - a.suara)
+        .sort((a, b) => b.suara - a.suara || a.nama.localeCompare(b.nama, "id"))
         .slice(0, 5);
 
       document.getElementById("kpiTotalInovasi").textContent = rows.length;
       document.getElementById("kpiTotalSuara").textContent = totalSuara;
-      document.getElementById("kpiTerpilih").textContent = terpilih;
 
-      const topListEl = document.getElementById("kpiTopList");
+      const top5Body = document.getElementById("top5Body");
       if (top5.length > 0) {
-        topListEl.innerHTML = top5.map((item, idx) => `
-          <li>
-            <span class="top-name" title="${item.nama}"><strong>${idx + 1}.</strong> ${item.nama}</span>
-            <span class="top-score">${item.suara}</span>
-          </li>
-        `).join("");
+        top5Body.innerHTML = top5.map((item, idx) => {
+          const rankClass = idx === 0 ? "rank-1" : idx === 1 ? "rank-2" : idx === 2 ? "rank-3" : "";
+          return `
+            <tr>
+              <td class="center"><span class="rank-badge ${rankClass}">${idx + 1}</span></td>
+              <td><strong>${item.nama}</strong></td>
+              <td>${item.opd}</td>
+              <td class="center"><span class="pill-cat">${item.kat}</span></td>
+              <td class="center"><span class="top-score">${item.suara} suara</span></td>
+            </tr>
+          `;
+        }).join("");
       } else {
-        topListEl.innerHTML = `<li class="kpi-sub">Belum ada suara masuk</li>`;
+        top5Body.innerHTML = `<tr><td colspan="5" class="center kpi-sub">Belum ada suara masuk</td></tr>`;
       }
 
       document.getElementById("statusBadge").textContent = `● Live • ${activeSheet} (${rows.length})`;
